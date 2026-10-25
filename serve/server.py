@@ -2073,6 +2073,7 @@ class Service:
             hist = list(self.history)
             totals = dict(self.totals)
             active = self.active
+            writing = len(self.current_requests)        # (of the active ones, those past their prompt)
         now = time.time()
         progress = getattr(self.engine, "progress", None)
         if s.get("busy") and not answering:
@@ -2082,6 +2083,7 @@ class Service:
         else:
             state = "unloaded" if self.unloaded else "idle"
         live = {"state": state, "queued": s.get("queued", 0), "active": active,   # (answering at once: --parallel)
+                "writing": writing,
                 "phase": s.get("phase") if s.get("busy") else None,
                 "prompt_tokens": s.get("prompt_tokens") if s.get("busy") else None,
                 "prompt_read": None, "prompt_total": None, "generated": s.get("generated") if s.get("busy") else None,

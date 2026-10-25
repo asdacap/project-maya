@@ -662,7 +662,7 @@ function renderHero(live, h, last, eng, tiers, totals) {
   const many = live.active > 1;                  // several running: their total, the graph's newest point
   const speed = many ? (h.tok_s || []).at(-1) : gen ? live.tok_s : last ? last.decode_tok_s : null;
   $("hero-speed").textContent = speed == null ? "–" : fmt(speed, 1);
-  $("hero-speed-sub").textContent = "decode · " + (many ? `${live.active} requests together` : gen ? "writing now"
+  $("hero-speed-sub").textContent = "decode · " + (many ? `${live.writing} writing` : gen ? "writing now"
                                     : live.state === "reading" ? "reading the prompt"
                                     : last ? "last request" : "waiting for a request");
   // prefill: the engine's rate over the tokens it read (not the reused prefix), live while a request runs

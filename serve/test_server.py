@@ -971,6 +971,16 @@ class LiveRateBursts(unittest.TestCase):
         self.assertLess(r, 40.0, r)
         self.assertGreater(r, 20.0, r)
 
+    def test_writing_counts_only_the_requests_past_their_prompt(self):
+        """live.writing: of the active requests, those writing (the ones the decode total adds up), not one still
+        reading its prompt."""
+        tok = ByteTokenizer()
+        svc = Service(MockEngine(tok, "x", max_context=CTX), tok, ChatTemplate(ROOT / "serve/chat_template.jinja"))
+        svc.status.update(busy=True)
+        svc.current_requests, svc.latest_request, svc.active = {RequestStat(), RequestStat()}, RequestStat(), 3
+        live = svc.metrics()["live"]
+        self.assertEqual((live["active"], live["writing"]), (3, 2))
+
     def test_no_rate_once_a_request_has_left(self):
         tok = ByteTokenizer()
         svc = Service(MockEngine(tok, "x", max_context=CTX), tok, ChatTemplate(ROOT / "serve/chat_template.jinja"))
